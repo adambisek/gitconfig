@@ -1,0 +1,77 @@
+[user]
+	name = Adam Bisek
+	email = adam.bisek@gmail.com
+[apply]
+	whitespace = nowarn
+[push]
+	default = current
+[core]
+	# windows->true, linux-> input
+	autocrlf = input
+	safecrlf = false
+	excludesfile = /Users/adambisek/.gitignore_global
+[alias]
+	# rebase feature branch onto current branch (typically release branch)
+	rebm = !sh -c 'echo rebasing branch \"$0\" on top of \"$1\" && git checkout \"$0\" && git pull origin \"$0\" && git rebase \"$1\" && git checkout \"$1\" && git merge \"$0\" && echo all done'
+	f = fetch
+	# updates your branch with upstream (if fast-forward is possible)
+	ff = !git merge --ff-only `git rev-parse --symbolic-full-name --abbrev-ref=strict HEAD@{u}`
+	# squash x commits onto first of them
+	sq = !sh -c 'git reset --soft HEAD~\"$0\" && git commit —-amend'
+	fp = fetch --prune
+	st = status
+	cm = commit
+	cma = commit --amend
+	br = branch
+	co = checkout
+	cp = cherry-pick
+	df = diff
+	rb = rebase
+	rbi = rebase -i
+	rbc = rebase --continue
+	rh = reset --hard
+	su = submodule update
+	# graph for current branch
+	l  = log --graph --decorate --pretty=oneline --abbrev-commit
+	# graph for all branches
+	ll = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	# log for current branch showing diffs (-m is for showing mergecommits too)
+	ld = log -p -m
+	# log for current branch showing summary of changed files (-m is for showing mergecommits too)
+	ls = log --stat -m
+	# number of commits for each person
+	stats = shortlog -n -s --no-merges
+	# remove remote branch (remote must be named origin), usage: git rmb test
+	rmb = !sh -c 'git push origin :$1' -
+	# shows local > tracked remote
+	brt = for-each-ref --format=\"%(refname:short) > %(upstream:short)\" refs/heads
+	# get upstream tracked branch or error
+	brtracked = rev-parse --symbolic-full-name --abbrev-ref=strict HEAD@{u}
+	# commit all changes to a WIP commit
+	wip = !git add --all && git commit -m WIP
+	# special branches
+	release = push origin HEAD:release
+	selenium = push origin HEAD:selenium
+	test = push origin HEAD:test
+[remote "origin"]
+	# git push -> push current HEAD into tracked remote branch
+	push = HEAD
+[diff]
+	mnemonicprefix = true
+[pull]
+	rebase = true
+[color]
+	ui = auto
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+[color "status"]
+	added = green
+	changed = yellow
+	untracked = cyan
