@@ -49,6 +49,8 @@
 	brtracked = rev-parse --symbolic-full-name --abbrev-ref=strict HEAD@{u}
 	# commit all changes to a WIP commit
 	wip = !git add --all && git commit -m WIP
+	# undo last commit
+	cm-undo = git reset HEAD~         
 	# special branches
 	release = push origin HEAD:release
 	selenium = push origin HEAD:selenium
