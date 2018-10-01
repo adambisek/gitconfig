@@ -13,6 +13,8 @@
 [alias]
 	# rebase feature branch onto current branch (typically release branch)
 	rebm = !sh -c 'echo rebasing branch \"$0\" on top of \"$1\" && git checkout \"$0\" && git pull origin \"$0\" && git rebase \"$1\" && git checkout \"$1\" && git merge \"$0\" && echo all done'
+	cleanup-branches = !sh -c 'git branch --merged | egrep -v \"(^\\*|master|staging)\" | xargs echo'
+	cleanup-branches-apply = !sh -c 'git branch --merged | egrep -v \"(^\\*|master|staging)\" | xargs git branch -d'
 	f = fetch
 	# updates your branch with upstream (if fast-forward is possible)
 	ff = !git merge --ff-only `git rev-parse --symbolic-full-name --abbrev-ref=strict HEAD@{u}`
