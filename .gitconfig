@@ -16,8 +16,8 @@
 	quote-string-undo = "!read -r l; printf %s \"$l\" | sed 's/\\\\\\([\\\"]\\)/\\1/g'; printf \"\\n\" #"
 	# rebase feature branch onto current branch (typically release branch)
 	rebm = !sh -c 'echo rebasing branch \"$0\" on top of \"$1\" && git checkout \"$0\" && git pull origin \"$0\" && git rebase \"$1\" && git checkout \"$1\" && git merge \"$0\" && echo all done'
-	cleanup-branches = "!for k in $(git branch | sed ':a;N;$!ba;s/\\n/ /g'); do if ([ -n \"$(git rev-parse --verify -q $k)\" ] && [ \"$k\" != \"master\" ] && [ -n \"$(git log -1 --since='1 month ago' -s $k)\" ] && [[ \"$(git branch --merged master)\" = *\"$k\"* ]]); then echo \"delete -> '$k'\"; fi; done;"
-	cleanup-branches-apply = "!for k in $(git branch | sed ':a;N;$!ba;s/\\n/ /g'); do if ([ -n \"$(git rev-parse --verify -q $k)\" ] && [ \"$k\" != \"master\" ] && [ -n \"$(git log -1 --since='1 month ago' -s $k)\" ] && [[ \"$(git branch --merged master)\" = *\"$k\"* ]]); then git branch -d \"$k\"; fi; done;"
+	cleanup-branches = "!for k in $(git branch | sed ':a;N;$!ba;s/\\n/ /g'); do if ([ -n \"$(git rev-parse --verify -q $k)\" ] && [ \"$k\" != \"master\" ] && [ \"$(git log --before='1 month ago' -1 -s $k --pretty=format:"%h")\" == \"$(git log -1 -s $k --pretty=format:"%h")\" ] && [[ \"$(git branch --merged master)\" = *\"$k\"* ]]); then echo \"delete -> '$k'\"; fi; done;"
+	cleanup-branches-apply = "!for k in $(git branch | sed ':a;N;$!ba;s/\\n/ /g'); do if ([ -n \"$(git rev-parse --verify -q $k)\" ] && [ \"$k\" != \"master\" ] && [ \"$(git log --before='1 month ago' -1 -s $k --pretty=format:"%h")\" == \"$(git log -1 -s $k --pretty=format:"%h")\" ] && [[ \"$(git branch --merged master)\" = *\"$k\"* ]]); then git branch -d \"$k\"; fi; done;"
 	## Shorthands
 	feat = !sh -c 'git checkout -b feat/\"$0\"'
 	f = fetch
