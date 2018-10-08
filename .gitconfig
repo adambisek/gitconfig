@@ -11,10 +11,15 @@
 	safecrlf = false
 	excludesfile = /Users/adambisek/.gitignore_global
 [alias]
+	## Nuclear reactor
+	quote-string = "!read -r l; printf \\\"!; printf %s \"$l\" | sed 's/\\([\\\"]\\)/\\\\\\1/g'; printf \" #\\\"\\n\" #"
+	quote-string-undo = "!read -r l; printf %s \"$l\" | sed 's/\\\\\\([\\\"]\\)/\\1/g'; printf \"\\n\" #"
 	# rebase feature branch onto current branch (typically release branch)
 	rebm = !sh -c 'echo rebasing branch \"$0\" on top of \"$1\" && git checkout \"$0\" && git pull origin \"$0\" && git rebase \"$1\" && git checkout \"$1\" && git merge \"$0\" && echo all done'
-	cleanup-branches = !sh -c 'git branch --merged | egrep -v \"(^\\*|master|staging)\" | xargs echo'
-	cleanup-branches-apply = !sh -c 'git branch --merged | egrep -v \"(^\\*|master|staging)\" | xargs git branch -d'
+	cleanup-branches = "!for k in $(git branch | sed ':a;N;$!ba;s/\\n/ /g'); do if ([ -n \"$(git rev-parse --verify -q $k)\" ] && [ \"$k\" != \"master\" ] && [ -n \"$(git log -1 --since='1 month ago' -s $k)\" ] && [[ \"$(git branch --merged master)\" = *\"$k\"* ]]); then echo \"delete -> '$k'\"; fi; done;"
+	cleanup-branches-apply = "!for k in $(git branch | sed ':a;N;$!ba;s/\\n/ /g'); do if ([ -n \"$(git rev-parse --verify -q $k)\" ] && [ \"$k\" != \"master\" ] && [ -n \"$(git log -1 --since='1 month ago' -s $k)\" ] && [[ \"$(git branch --merged master)\" = *\"$k\"* ]]); then git branch -d \"$k\"; fi; done;"
+	## Shorthands
+	feat = !sh -c 'git checkout -b feat/\"$0\"'
 	f = fetch
 	# updates your branch with upstream (if fast-forward is possible)
 	ff = !git merge --ff-only `git rev-parse --symbolic-full-name --abbrev-ref=strict HEAD@{u}`
@@ -33,14 +38,6 @@
 	rbc = rebase --continue
 	rh = reset --hard
 	su = submodule update
-	# graph for current branch
-	l  = log --graph --decorate --pretty=oneline --abbrev-commit
-	# graph for all branches
-	ll = log --graph --decorate --pretty=oneline --abbrev-commit --all
-	# log for current branch showing diffs (-m is for showing mergecommits too)
-	ld = log -p -m
-	# log for current branch showing summary of changed files (-m is for showing mergecommits too)
-	ls = log --stat -m
 	# number of commits for each person
 	stats = shortlog -n -s --no-merges
 	# remove remote branch (remote must be named origin), usage: git rmb test
@@ -51,12 +48,15 @@
 	brtracked = rev-parse --symbolic-full-name --abbrev-ref=strict HEAD@{u}
 	# commit all changes to a WIP commit
 	wip = !git add --all && git commit -m WIP
-	# undo last commit
-	cm-undo = git reset HEAD~         
-	# special branches
-	release = push origin HEAD:release
-	selenium = push origin HEAD:selenium
-	test = push origin HEAD:test
+	## Stats
+	# graph for current branch
+	l  = log --graph --decorate --pretty=oneline --abbrev-commit
+	# graph for all branches
+	ll = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	# log for current branch showing diffs (-m is for showing mergecommits too)
+	ld = log -p -m
+	# log for current branch showing summary of changed files (-m is for showing mergecommits too)
+	ls = log --stat -m
 [remote "origin"]
 	# git push -> push current HEAD into tracked remote branch
 	push = HEAD
