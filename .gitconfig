@@ -14,6 +14,8 @@
 	## Nuclear reactor
 	quote-string = "!read -r l; printf \\\"!; printf %s \"$l\" | sed 's/\\([\\\"]\\)/\\\\\\1/g'; printf \" #\\\"\\n\" #"
 	quote-string-undo = "!read -r l; printf %s \"$l\" | sed 's/\\\\\\([\\\"]\\)/\\1/g'; printf \"\\n\" #"
+	# search
+        s = "!sh -c 'git branch | grep $0'"
 	# rebase feature branch onto current branch (typically release branch)
 	rebm = !sh -c 'echo rebasing branch \"$0\" on top of \"$1\" && git checkout \"$0\" && git pull origin \"$0\" && git rebase \"$1\" && git checkout \"$1\" && git merge \"$0\" && echo all done'
 	cleanup-branches = "!for k in $(git branch | sed ':a;N;$!ba;s/\\n/ /g'); do if ([ -n \"$(git rev-parse --verify -q $k)\" ] && [ \"$k\" != \"master\" ] && [ \"$(git log --before='1 month ago' -1 -s $k --pretty=format:"%h")\" == \"$(git log -1 -s $k --pretty=format:"%h")\" ] && [[ \"$(git branch --merged master)\" = *\"$k\"* ]]); then echo \"delete -> '$k'\"; fi; done;"
